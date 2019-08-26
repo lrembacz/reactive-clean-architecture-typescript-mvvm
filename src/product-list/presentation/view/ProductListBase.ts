@@ -1,25 +1,26 @@
-import {LitElement, html} from 'lit-element';
+import {html} from 'lit-element';
 import {TemplateResult} from 'lit-html';
 import ProductListItem from '../../domain/entity/ProductListItem';
 import ProductListViewModelInterface from '../viewModel/ProductListViewModelInterface';
 import subscriptions from '../../../common/presentation/subscriptions';
+import OwnElement from '../../../common/presentation/OwnElement';
 
 @subscriptions(function() {
     return {
         productList: this.productListViewModel.getProductList()
     }
 })
-class ProductListBase extends LitElement {
+class ProductListBase extends OwnElement {
     public productListViewModel: ProductListViewModelInterface;
     protected productList: Array<ProductListItem> = [];
 
-    connectedCallback() {
-        super.connectedCallback();
+    created() {
+        super.created();
         this.productListViewModel.onInit();
     }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
+    beforeDestroy() {
+        super.beforeDestroy();
         this.productListViewModel.onDispose();
     }
 

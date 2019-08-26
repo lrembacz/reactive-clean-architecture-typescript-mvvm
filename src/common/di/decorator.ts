@@ -1,14 +1,13 @@
 import {inject} from 'inversify';
-import {LitElement} from 'lit-element';
+import OwnElement from '../presentation/OwnElement';
 
-export type Constructor<T extends LitElement> = new (...args: any[]) => T;
+export type Constructor<T extends OwnElement> = new (...args: any[]) => T;
 
 function resolve<T extends Constructor<any>>(target: T) {
     return class extends target {
-
-        constructor(...args: any[]) {
-            super(...args);
+        beforeCreated() {
             this.resolveDependencies();
+            super.beforeCreated();
         }
 
         resolveDependencies() {
@@ -19,10 +18,14 @@ function resolve<T extends Constructor<any>>(target: T) {
                 const event = new CustomEvent('_inject_', {
                     detail: {key: meta[key][0].value}, bubbles: true, cancelable: true, composed: true
                 });
-                const element = window.isIE ? document.body : this;
+                const element = this;
                 element.dispatchEvent(event);
                 this[key] = (event as CustomEvent).detail.dependency;
             });
+        }
+
+        beforeDestroy() {
+
         }
     };
 }

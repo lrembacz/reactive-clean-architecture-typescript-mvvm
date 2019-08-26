@@ -1,7 +1,7 @@
 import {Observable, Subscription} from 'rxjs/index';
-import {LitElement} from 'lit-element';
+import OwnElement from './OwnElement';
 
-type Constructor<T extends LitElement> = { new (...args: any[]): T };
+type Constructor<T extends OwnElement> = { new (...args: any[]): T };
 interface SubscriptionsList { [s: string]: Observable<any>; }
 
 export default function subscriptions( subscriptionsList: () => SubscriptionsList) {
@@ -9,7 +9,7 @@ export default function subscriptions( subscriptionsList: () => SubscriptionsLis
         return class extends baseElement {
             private subscription: Subscription;
 
-            connectedCallback() {
+            created() {
                 this.subscription = new Subscription();
 
                 const subscriptionsBinded = subscriptionsList.bind(this);
@@ -23,11 +23,11 @@ export default function subscriptions( subscriptionsList: () => SubscriptionsLis
                         }
                     });
                 }
-                super.connectedCallback();
+                super.created();
             }
 
-            disconnectedCallback() {
-                super.disconnectedCallback();
+            beforeDestroy() {
+                super.beforeDestroy();
                 this.subscription.unsubscribe();
             }
         } as any;

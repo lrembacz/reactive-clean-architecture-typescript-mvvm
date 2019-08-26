@@ -1,17 +1,14 @@
-import {html, LitElement, TemplateResult} from 'lit-element';
+import {html, TemplateResult} from 'lit-element';
 import {container} from '../common/di';
 import productListModule from './di/product-list-module';
+import OwnElement from '../common/presentation/OwnElement';
 
-class ProductListProvider extends LitElement {
+class ProductListProvider extends OwnElement {
     constructor() {
         super();
         container.load(productListModule);
-        const element = window.isIE ? document.body : this;
+        const element = this;
         element.addEventListener('_inject_', this.inject, false);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
     }
 
     inject(e: Event | CustomEvent) {
