@@ -2,6 +2,8 @@ import ProductListViewModelInterface from './ProductListViewModelInterface';
 import FetchProductListUseCase from '../../domain/usecase/FetchProductListUseCase';
 import ProductListItem from '../../domain/entity/ProductListItem';
 import {BehaviorSubject, Observable} from 'rxjs/index';
+import {Failure} from '../../data/exception/Failure';
+import {Either} from '../../../common/functional/Either';
 
 export default class ProductListViewModel implements ProductListViewModelInterface {
 
@@ -34,8 +36,11 @@ export default class ProductListViewModel implements ProductListViewModelInterfa
 
     fetchObserver = new class {
         constructor(public parent: ProductListViewModel) {}
-        next(productList: Array<ProductListItem>) {
-            this.parent.handleFetchSuccess(productList);
+        next(result: Either<Failure, ProductListItem[]>) {
+            result.either(
+                (l) => this.parent.handleFetchError(new Error(l.message)),
+                (r) => this.parent.handleFetchSuccess(r)
+            )
         }
         error(error: Error) {
             this.parent.handleFetchError(error);

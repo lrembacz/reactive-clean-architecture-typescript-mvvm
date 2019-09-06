@@ -1,4 +1,6 @@
-import AxiosService from '../../../common/data/AxiosService';
+import AxiosApi from '../../../common/data/AxiosApi';
+import {ApiInterface} from '../../../common/data/ApiInterface';
 
-export default class ProductListService extends AxiosService {
+export default class ProductListService extends AxiosApi implements ApiInterface {
+
 }

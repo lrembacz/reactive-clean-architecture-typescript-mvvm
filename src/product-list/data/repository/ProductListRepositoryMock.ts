@@ -2,12 +2,14 @@ import ProductListRepositoryInterface from '../../domain/repository/ProductListR
 import {Observable} from 'rxjs/index';
 import ProductListItem from '../../domain/entity/ProductListItem';
 import { injectable} from 'inversify';
+import {Failure} from '../exception/Failure';
+import {Either} from '../../../common/functional/Either';
 
 @injectable()
 export default class ProductListRepositoryMock implements ProductListRepositoryInterface {
-    fetchProductList(): Observable<Array<ProductListItem>> {
+    fetchProductList(): Observable<Either<Failure, ProductListItem[]>> {
         return new Observable((ob) => {
-            ob.next([
+            ob.next(Either.Right([
                 {
                     "id": 1,
                     "name": "Przykladowy produkt",
@@ -34,7 +36,7 @@ export default class ProductListRepositoryMock implements ProductListRepositoryI
                 }
             ].map(
                 item => new ProductListItem(item.id, item.name, item.description, item.price)
-            ));
+            )));
             ob.complete();
         })
     }
